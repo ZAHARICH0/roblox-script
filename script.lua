@@ -1,6 +1,6 @@
 -- =================================================================
--- Project: MM2 Ultimate Delta Script
--- Platform: Roblox (Delta Executor)
+-- Project: MM2 Ultimate Delta Script (Mobile GUI Fix)
+-- Platform: Roblox (Delta Executor Mobile)
 -- Language: Luau
 -- =================================================================
 
@@ -22,7 +22,6 @@ local function InitializeAntiBan()
         end
     end)
     
-    -- Hook into settings/toggles attempts
     getgenv().AntiBan = setmetatable({}, {
         __index = function() return true end,
         __newindex = function()
@@ -46,7 +45,6 @@ local function ShieldReputation()
         local method = getnamecallmethod()
         local args = {...}
         if method == "FireServer" and tostring(self):lower():find("report") then
-            -- Block outgoing reports and spoof normal reputation status
             return nil
         end
         return oldNamecall(self, ...)
@@ -55,7 +53,45 @@ local function ShieldReputation()
 end
 ShieldReputation()
 
--- ESP System (Murderer, Sheriff, Hero, Innocent)
+-- Mobile GUI Creation
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MM2_MobileGUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local MainButton = Instance.new("TextButton")
+MainButton.Name = "ToggleGUI"
+MainButton.Parent = ScreenGui
+MainButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MainButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+MainButton.Position = UDim2.new(0.05, 0, 0.1, 0)
+MainButton.Size = UDim2.new(0, 140, 0, 50)
+MainButton.Font = Enum.Font.SourceSansBold
+MainButton.Text = "MM2 MENU"
+MainButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MainButton.TextSize = 18
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainButton
+
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Name = "Status"
+StatusLabel.Parent = ScreenGui
+StatusLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+StatusLabel.BackgroundTransparency = 0.5
+StatusLabel.Position = UDim2.new(0.05, 0, 0.18, 0)
+StatusLabel.Size = UDim2.new(0, 200, 0, 30)
+StatusLabel.Font = Enum.Font.SourceSans
+StatusLabel.Text = "Status: Active"
+StatusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+StatusLabel.TextSize = 14
+
+local StatusCorner = Instance.new("UICorner")
+StatusCorner.CornerRadius = UDim.new(0, 6)
+StatusCorner.Parent = StatusLabel
+
+-- ESP System
 local ESPFolder = Instance.new("Folder", CoreGui)
 ESPFolder.Name = "MM2_ESP"
 
@@ -70,22 +106,16 @@ local function CreateESP(player)
         local box = Instance.new("Highlight")
         box.Name = player.Name
         box.Adornee = player.Character
-        box.äure = true
         
-        local role = "Innocent"
-        local color = Color3.fromRGB(0, 255, 0) -- Default Innocent: Green
+        local color = Color3.fromRGB(0, 255, 0)
 
         if player.Backpack:FindFirstChild("Knife") or (player.Character and player.Character:FindFirstChild("Knife")) then
-            role = "Murderer"
-            color = Color3.fromRGB(255, 0, 0) -- Murderer: Red
+            color = Color3.fromRGB(255, 0, 0)
         elseif player.Backpack:FindFirstChild("Gun") or (player.Character and player.Character:FindFirstChild("Gun")) then
-            -- Check if Sheriff or Hero
             if player.Backpack:FindFirstChild("Gun").Parent == player.Character then
-                role = "Sheriff"
-                color = Color3.fromRGB(0, 0, 255) -- Sheriff: Blue
+                color = Color3.fromRGB(0, 0, 255)
             else
-                role = "Hero"
-                color = Color3.fromRGB(255, 255, 0) -- Hero: Yellow
+                color = Color3.fromRGB(255, 255, 0)
             end
         end
 
@@ -107,7 +137,7 @@ for _, p in ipairs(Players:GetPlayers()) do
 end
 Players.PlayerAdded:Connect(CreateESP)
 
--- Invisible & Godmode Action State (Collect coins, shoot, kill while invisible)
+-- Invisible & Godmode Action State
 local function ToggleInvisibility(state)
     local char = LocalPlayer.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
@@ -123,11 +153,8 @@ local function ToggleInvisibility(state)
     end
 end
 
--- Bypass invisible action limits (allow coin collection & weapon usage)
 local function EnableActiveStealth()
     ToggleInvisibility(true)
-    
-    -- Allow tool usage while invisible
     LocalPlayer.CharacterAdded:Connect(function(newChar)
         task.wait(1)
         ToggleInvisibility(true)
@@ -149,7 +176,6 @@ local function ApplyVisualGodly()
                         v:Destroy()
                     end
                 end
-                -- Apply visual tag/name representation
                 tool.Name = "[GODLY] " .. randomGodly
             end
         end
@@ -161,4 +187,3 @@ local function ApplyVisualGodly()
     end
 end
 ApplyVisualGodly()
-
