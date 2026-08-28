@@ -1,7 +1,7 @@
 --[[
     📱 Admin HD Loader для Delta Executor (Mobile/Tablet)
     ⚠️ ВНИМАНИЕ: ИНОГДА ПЛЕЙСЫ МОГУТ БАНИТЬ!!! Но работает на всех плейсах
-    💡 ИДЕЯ: Нажал → кнопка пропала → Admin HD активирован (чисто и красиво)
+
 ]]
 
 if not game:IsLoaded() then
@@ -50,7 +50,7 @@ local function CreateButton()
     tooltip.BackgroundTransparency = 0.3
     tooltip.BorderSizePixel = 1
     tooltip.BorderColor3 = Color3.fromRGB(200, 200, 200)
-    tooltip.Text = "⚠️ Нажми → Admin HD активируется"
+    tooltip.Text = "🔥 Нажми → Admin HD активируется"
     tooltip.TextColor3 = Color3.fromRGB(255, 255, 150)
     tooltip.TextSize = isMobile and 11 or 12
     tooltip.TextScaled = false
@@ -70,13 +70,14 @@ local function CreateButton()
     end
 
     button.MouseButton1Click:Connect(function()
-        -- ⭐ ГЛАВНАЯ ИДЕЯ: GUI пропадает МГНОВЕННО при нажатии
+        -- 💡 ГЛАВНАЯ ИДЕЯ: GUI пропадает МГНОВЕННО при нажатии
         screenGui:Destroy()
         _G.AdminHDButton = nil
         
-        -- Загружаем Admin HD в фоне
+        -- ⭐ ЗАГРУЖАЕМ ИМЕННО ADMIN HD (правильная ссылка!)
         pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/ltseverydayyou/Nameless-Admin/main/Source.lua"))()
+            -- Админ HD — оригинальный скрипт
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Amin-MA/AdminHD/main/Source.lua"))()
         end)
         
         print("✅ Admin HD активирован! ГУИ пропал, как и задумано.")
